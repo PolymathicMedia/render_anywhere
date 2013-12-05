@@ -23,6 +23,15 @@ module RenderAnywhere
       # this is you normal rails application helper
       self.class.send :helper, ApplicationHelper
 
+      # include the all-important text helper
+      self.class.send :helper, ActionView::Helpers::TextHelper
+
+      # include all other helpers in the app/helpers directory.
+      Dir[Rails.root.join('app','helpers/*_helper.rb')].each do |file|
+        helper_key = Pathname.new(file).basename.to_s.gsub(/_helper\.rb$/,'')
+        self.class.send :helper, helper_key
+      end
+
       lookup_context.view_paths = Rails.root.join('app', 'views')
       config.javascripts_dir = Rails.root.join('public', 'javascripts')
       config.stylesheets_dir = Rails.root.join('public', 'stylesheets')
